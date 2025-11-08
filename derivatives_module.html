@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CFA Level I &mdash; Derivatives Module Interactive Guide</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0d1b2a;
+      --bg-alt: #1b263b;
+      --card: #14213d;
+      --text: #e0e1dd;
+      --accent: #fca311;
+      --accent-muted: rgba(252, 163, 17, 0.2);
+      --success: #2ecc71;
+      --danger: #e74c3c;
+      --info: #00b4d8;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(252, 163, 17, 0.12), transparent 40%),
+        radial-gradient(circle at 80% 0%, rgba(0, 180, 216, 0.12), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+      background: rgba(13, 27, 42, 0.88);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 1.6rem clamp(1rem, 4vw, 3rem);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2.3rem);
+      letter-spacing: 0.06em;
+    }
+
+    #nav {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    #nav button {
+      all: unset;
+      cursor: pointer;
+      padding: 0.65rem 1.1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: transform 0.2s ease, background 0.3s ease;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    #nav button.active {
+      background: var(--accent);
+      color: #101010;
+      border-color: transparent;
+      transform: translateY(-2px);
+    }
+
+    #nav button:hover {
+      background: rgba(252, 163, 17, 0.18);
+    }
+
+    main {
+      padding: clamp(1rem, 5vw, 4rem);
+      display: grid;
+      gap: 2rem;
+    }
+
+    section {
+      display: none;
+      gap: 1.5rem;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    section.active {
+      display: grid;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      background: rgba(20, 33, 61, 0.72);
+      border-radius: 20px;
+      padding: clamp(1.1rem, 4vw, 1.8rem);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22);
+    }
+
+    .grid {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .grid.auto-fit {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    h2 {
+      margin: 0 0 0.8rem;
+      font-size: clamp(1.3rem, 2.6vw, 2rem);
+    }
+
+    h3 {
+      margin-top: 0;
+    }
+
+    p, li {
+      line-height: 1.6;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(0, 180, 216, 0.18);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      color: #caf0f8;
+    }
+
+    .timeline {
+      border-left: 3px solid rgba(255, 255, 255, 0.1);
+      padding-left: 1.4rem;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: -11px;
+      top: 4px;
+      width: 18px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .timeline-step {
+      margin-bottom: 1.2rem;
+      padding: 0.6rem 0.8rem;
+      border-radius: 12px;
+      background: rgba(252, 163, 17, 0.08);
+    }
+
+    .flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      align-items: stretch;
+    }
+
+    .flashcards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .flashcard {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 16px;
+      padding: 1rem;
+      position: relative;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      min-height: 140px;
+      transform-style: preserve-3d;
+      transition: transform 0.7s;
+    }
+
+    .flashcard.flipped .flashcard-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flashcard-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 1rem;
+      border-radius: 12px;
+    }
+
+    .flashcard-face.front {
+      background: rgba(252, 163, 17, 0.1);
+      border: 1px dashed rgba(252, 163, 17, 0.4);
+    }
+
+    .flashcard-face.back {
+      background: rgba(0, 180, 216, 0.15);
+      border: 1px dashed rgba(0, 180, 216, 0.4);
+      transform: rotateY(180deg);
+    }
+
+    .quiz {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .quiz button {
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.2s ease, background 0.3s ease;
+      background: rgba(0, 180, 216, 0.15);
+      color: var(--text);
+    }
+
+    .quiz button:hover {
+      transform: translateY(-1px);
+      background: rgba(0, 180, 216, 0.25);
+    }
+
+    .quiz button.correct {
+      background: rgba(46, 204, 113, 0.25);
+      border: 1px solid var(--success);
+    }
+
+    .quiz button.wrong {
+      background: rgba(231, 76, 60, 0.25);
+      border: 1px solid var(--danger);
+    }
+
+    .payoff-chart {
+      width: 100%;
+      height: 300px;
+      background: rgba(0, 0, 0, 0.18);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .payoff-chart canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .legend {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+
+    .legend span {
+      display: inline-flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+    }
+
+    details summary {
+      cursor: pointer;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.6rem 0.8rem;
+      border-radius: 10px;
+    }
+
+    details[open] summary {
+      background: rgba(252, 163, 17, 0.16);
+    }
+
+    blockquote {
+      border-left: 3px solid rgba(0, 180, 216, 0.35);
+      margin: 0;
+      padding: 0.8rem 1rem;
+      background: rgba(0, 180, 216, 0.08);
+      border-radius: 12px;
+      font-style: italic;
+      color: #caf0f8;
+    }
+
+    .formula {
+      font-family: "Fira Code", "Cascadia Code", monospace;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 12px;
+      padding: 0.8rem;
+      overflow-x: auto;
+    }
+
+    @media (max-width: 700px) {
+      header {
+        justify-content: center;
+      }
+      #nav {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Derivatives Mastery Lab &mdash; CFA Level I</h1>
+    <nav id="nav"></nav>
+  </header>
+
+  <main id="content"></main>
+
+  <template id="section-template">
+    <section>
+      <div class="card">
+        <h2></h2>
+        <p></p>
+      </div>
+      <div class="grid auto-fit"></div>
+    </section>
+  </template>
+
+  <script>
+    const data = [
+      {
+        id: "map",
+        title: "Learning Roadmap",
+        intro:
+          "Follow the CFA curriculum structure as you move from derivative market foundations through valuation and risk management. Each card highlights key exam themes and quick wins.",
+        blocks: [
+          {
+            heading: "1. Derivative Market Overview",
+            tag: "Core Concept",
+            content:
+              "Purpose, market participants, and types of derivatives (forwards, futures, options, swaps). Understand why derivatives exist and how they distribute risk.",
+          },
+          {
+            heading: "2. Pricing & Valuation",
+            tag: "Core Concept",
+            content:
+              "Learn to compute forward prices, option intrinsic/extrinsic values, and swap fixed rates using no-arbitrage and present value logic.",
+          },
+          {
+            heading: "3. Risk & Return Profiles",
+            tag: "Exam Favorite",
+            content:
+              "Master payoff diagrams, breakeven points, and how combining derivatives alters return distributions.",
+          },
+          {
+            heading: "4. Uses of Derivatives",
+            tag: "Applications",
+            content:
+              "Hedging (portfolio insurance, interest rate exposure) and speculation (volatility trading). Understand how CFA exam vignettes test strategic thinking.",
+          },
+        ],
+      },
+      {
+        id: "instruments",
+        title: "Derivative Instruments Deep Dive",
+        intro:
+          "Interact with the cards to break down the mechanics, payoffs, and valuation fundamentals of each contract type.",
+        blocks: [
+          {
+            heading: "Forwards",
+            content:
+              "Customized OTC agreements to buy/sell an asset at a future date for a price set today. Key exam focus: no-arbitrage pricing F<sub>0</sub> = S<sub>0</sub>(1 + r)<sup>T</sup> (adjusted for income/storage).",
+          },
+          {
+            heading: "Futures",
+            content:
+              "Exchange-traded forwards with daily marking-to-market and margin requirements. Remember: futures price converges to spot at expiration and credit risk is mitigated by the clearinghouse.",
+          },
+          {
+            heading: "Options",
+            content:
+              "Rights without obligations. Calls profit from price increases, puts from decreases. Understand moneyness, intrinsic vs. time value, and option Greeks at a qualitative level.",
+          },
+          {
+            heading: "Swaps",
+            content:
+              "Agreements to exchange cash flow streams. Level I focuses on plain-vanilla interest rate swaps and currency swaps priced using series of forwards.",
+          },
+        ],
+      },
+      {
+        id: "valuation",
+        title: "Valuation Playgrounds",
+        intro:
+          "Manipulate assumptions to see how derivative values respond. Values update instantly to reinforce no-arbitrage intuition.",
+        blocks: [
+          {
+            type: "forwardCalculator",
+            heading: "Forward Price Explorer",
+            content:
+              "Adjust inputs to compute the theoretical forward price on an investment asset with continuous income (e.g., stock index with dividend yield).",
+          },
+          {
+            type: "optionCalculator",
+            heading: "Option Intrinsic Value Trainer",
+            content:
+              "Toggle spot and strike prices to visualize intrinsic values for calls and puts. Time value is highlighted to cement intuition.",
+          },
+        ],
+      },
+      {
+        id: "payoffs",
+        title: "Payoff Lab",
+        intro:
+          "Compare payoffs for key strategies. Click buttons to switch between long/short or combined positions and watch the diagram morph.",
+        blocks: [
+          {
+            type: "payoffChart",
+            heading: "Options Strategy Visualizer",
+            content:
+              "Select a strategy to see profit diagrams at expiration. Track how breakeven points change and which payoffs have limited vs. unlimited potential.",
+          },
+        ],
+      },
+      {
+        id: "risk",
+        title: "Risk Management & Exam Insights",
+        intro:
+          "Digest the qualitative angles: how derivatives transform risk and how the CFA exam frames common traps.",
+        blocks: [
+          {
+            heading: "Risk Transfer & Hedging",
+            content:
+              "Derivatives allow separating ownership from risk exposure. Examples: duration matching with interest rate swaps, beta adjustment via equity index futures, and protective puts for portfolio insurance.",
+          },
+          {
+            heading: "Counterparty & Liquidity Risk",
+            content:
+              "OTC derivatives introduce credit risk, mitigated by collateral and netting agreements. Futures manage liquidity via standardization but expose users to margin calls.",
+          },
+          {
+            heading: "Exam Watch-outs",
+            content:
+              "Read question stems carefully for long vs. short orientation, identify payoff at expiration vs. profit, and remember cash vs. price-settled distinctions.",
+          },
+        ],
+      },
+      {
+        id: "flashcards",
+        title: "Tap-to-Reveal Flashcards",
+        intro:
+          "Flip each flashcard to test yourself on vocabulary, valuation logic, and risk management applications.",
+        blocks: [
+          {
+            type: "flashcards",
+            items: [
+              {
+                front: "Define basis risk",
+                back: "Risk that the spot price and futures price do not move in lockstep, causing an imperfect hedge.",
+              },
+              {
+                front: "Mark-to-market",
+                back: "Daily settlement of futures gains/losses through margin accounts overseen by the clearinghouse.",
+              },
+              {
+                front: "Protective put",
+                back: "Long stock + long put; establishes a portfolio floor while keeping upside potential.",
+              },
+              {
+                front: "Swap fixed rate",
+                back: "Chosen such that PV(fixed leg) = PV(floating leg) at initiation, typically derived from forward rates.",
+              },
+              {
+                front: "Intrinsic value",
+                back: "Immediate exercise value: max(0, S - K) for calls, max(0, K - S) for puts.",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "quiz",
+        title: "Exam Drill Mini-Quiz",
+        intro:
+          "Answer quick questions to cement memory. Feedback explains the logic so you remember the rationale, not just the answer.",
+        blocks: [
+          {
+            type: "quiz",
+            questions: [
+              {
+                prompt: "At initiation, the value of a properly priced forward contract to both counterparties is...",
+                options: [
+                  { text: "Positive to the long, negative to the short", correct: false, feedback: "No: arbitrage prevents one side from starting with value." },
+                  { text: "Zero", correct: true, feedback: "Correct! Forwards are priced so PV of long and short positions offset at inception." },
+                  { text: "Equal to the spot price", correct: false, feedback: "Spot price is part of the pricing, but contract value begins at zero." }
+                ],
+              },
+              {
+                prompt: "A long call combined with a short put (same strike and maturity) replicates...",
+                options: [
+                  { text: "A long forward contract", correct: true, feedback: "Yes! Put-call parity rearrangement yields synthetic forwards." },
+                  { text: "A covered call", correct: false, feedback: "Covered calls combine long stock and short call." },
+                  { text: "A straddle", correct: false, feedback: "Straddles are long call + long put." }
+                ],
+              },
+              {
+                prompt: "The primary reason futures reduce counterparty risk compared to forwards is...",
+                options: [
+                  { text: "They are standardized", correct: false, feedback: "Standardization aids liquidity but doesn't eliminate credit risk." },
+                  { text: "They settle through a clearinghouse with margining", correct: true, feedback: "Right! Daily settlement and clearinghouse guarantees curb default risk." },
+                  { text: "They always require physical delivery", correct: false, feedback: "Many futures are cash-settled." }
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "glossary",
+        title: "Formulas & Quick Reference",
+        intro:
+          "Use this expandable list for rapid revision. Each item highlights a high-yield relationship tested on the CFA exam.",
+        blocks: [
+          {
+            type: "details",
+            items: [
+              {
+                summary: "Forward Price (Investment Asset with Income)",
+                body:
+                  '<div class="formula">F_0 = S_0 e^{(r - q)T}</div><p>Where r is the risk-free rate, q is the continuous income (dividend yield), and T is time to maturity in years.</p>',
+              },
+              {
+                summary: "Forward Price (Commodity with Storage)",
+                body:
+                  '<div class="formula">F_0 = (S_0 + PV_{storage} - PV_{convenience})e^{rT}</div><p>Convenience yield lowers the fair forward price because it reflects the non-monetary benefits of holding the physical commodity.</p>',
+              },
+              {
+                summary: "Put-Call Parity",
+                body:
+                  '<div class="formula">C_0 + PV(K) = P_0 + S_0</div><p>Can be rearranged to build synthetic positions and detect mispricing.</p>',
+              },
+              {
+                summary: "Option Breakeven",
+                body:
+                  '<div class="formula">\text{Call BE} = K + \text{Premium}</div><div class="formula">\text{Put BE} = K - \text{Premium}</div>',
+              },
+              {
+                summary: "Swap Valuation",
+                body:
+                  '<p>At initiation: PV(fixed leg) = PV(floating leg). Fixed rate = par swap rate derived from zero-coupon curve.</p><p>After initiation, value equals PV(received leg) - PV(paid leg).</p>',
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    const nav = document.getElementById("nav");
+    const content = document.getElementById("content");
+    const template = document.getElementById("section-template");
+
+    data.forEach((section, index) => {
+      const btn = document.createElement("button");
+      btn.textContent = section.title;
+      btn.dataset.target = section.id;
+      if (index === 0) btn.classList.add("active");
+      nav.appendChild(btn);
+
+      const clone = template.content.cloneNode(true);
+      const sectionEl = clone.querySelector("section");
+      sectionEl.id = section.id;
+      if (index === 0) sectionEl.classList.add("active");
+
+      const heading = clone.querySelector("h2");
+      heading.innerHTML = section.title;
+
+      const intro = clone.querySelector("p");
+      intro.innerHTML = section.intro;
+
+      const grid = clone.querySelector(".grid");
+
+      section.blocks.forEach((block) => {
+        if (block.type === "forwardCalculator") {
+          const card = document.createElement("div");
+          card.className = "card grid";
+          card.innerHTML = `
+            <div>
+              <span class="tag">No-Arbitrage</span>
+              <h3>${block.heading}</h3>
+              <p>${block.content}</p>
+            </div>
+            <label>Spot Price (S<sub>0</sub>)<br/><input type="number" value="100" min="0" step="0.5" data-forward="spot" /></label>
+            <label>Risk-free Rate (r, %)<br/><input type="number" value="5" step="0.1" data-forward="rate" /></label>
+            <label>Dividend Yield (q, %)<br/><input type="number" value="2" step="0.1" data-forward="yield" /></label>
+            <label>Time to Maturity (T, years)<br/><input type="number" value="1" min="0.1" step="0.1" data-forward="time" /></label>
+            <div class="formula" data-forward="output">Forward Price = 0</div>
+          `;
+          grid.appendChild(card);
+        } else if (block.type === "optionCalculator") {
+          const card = document.createElement("div");
+          card.className = "card grid";
+          card.innerHTML = `
+            <div>
+              <span class="tag">Intrinsic Insight</span>
+              <h3>${block.heading}</h3>
+              <p>${block.content}</p>
+            </div>
+            <label>Spot Price (S)<br/><input type="number" value="105" min="0" step="0.5" data-option="spot" /></label>
+            <label>Strike Price (K)<br/><input type="number" value="100" min="0" step="0.5" data-option="strike" /></label>
+            <div class="card" style="background: rgba(0, 0, 0, 0.25);">
+              <h4>Intrinsic Values</h4>
+              <p>Call: <strong data-option="call">0</strong></p>
+              <p>Put: <strong data-option="put">0</strong></p>
+              <p>Time Value Insight: <span data-option="insight"></span></p>
+            </div>
+          `;
+          grid.appendChild(card);
+        } else if (block.type === "payoffChart") {
+          const card = document.createElement("div");
+          card.className = "card grid";
+          card.innerHTML = `
+            <div>
+              <span class="tag">Visual Intuition</span>
+              <h3>${block.heading}</h3>
+              <p>${block.content}</p>
+            </div>
+            <div class="flex">
+              <div>
+                <label>Strategy
+                  <select data-payoff="strategy">
+                    <option value="longCall">Long Call</option>
+                    <option value="shortCall">Short Call</option>
+                    <option value="longPut">Long Put</option>
+                    <option value="shortPut">Short Put</option>
+                    <option value="coveredCall">Covered Call</option>
+                    <option value="protectivePut">Protective Put</option>
+                    <option value="straddle">Long Straddle</option>
+                    <option value="strangle">Long Strangle</option>
+                  </select>
+                </label>
+              </div>
+              <div>
+                <label>Strike (K)
+                  <input type="number" value="100" step="1" data-payoff="strike" />
+                </label>
+              </div>
+              <div>
+                <label>Premium (Call)
+                  <input type="number" value="6" step="0.5" data-payoff="premiumCall" />
+                </label>
+              </div>
+              <div>
+                <label>Premium (Put)
+                  <input type="number" value="4" step="0.5" data-payoff="premiumPut" />
+                </label>
+              </div>
+            </div>
+            <div class="payoff-chart"><canvas></canvas></div>
+            <div class="legend">
+              <span><i style="background: var(--accent);"></i> Profit</span>
+              <span><i style="background: var(--info);"></i> Payoff</span>
+            </div>
+          `;
+          grid.appendChild(card);
+        } else if (block.type === "flashcards") {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <span class="tag">Active Recall</span>
+            <h3>${section.title}</h3>
+            <p>${section.intro}</p>
+            <div class="flashcards"></div>
+          `;
+          const wrapper = card.querySelector(".flashcards");
+          block.items.forEach((item) => {
+            const flash = document.createElement("div");
+            flash.className = "flashcard";
+            flash.innerHTML = `
+              <div class="flashcard-inner">
+                <div class="flashcard-face front">${item.front}</div>
+                <div class="flashcard-face back">${item.back}</div>
+              </div>
+            `;
+            wrapper.appendChild(flash);
+          });
+          grid.appendChild(card);
+        } else if (block.type === "quiz") {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <span class="tag">Self-Test</span>
+            <h3>${section.title}</h3>
+            <p>${section.intro}</p>
+            <div class="quiz"></div>
+          `;
+          const quiz = card.querySelector(".quiz");
+          block.questions.forEach((q, idx) => {
+            const container = document.createElement("div");
+            container.className = "card";
+            container.style.background = "rgba(0, 0, 0, 0.25)";
+            container.innerHTML = `<p><strong>Q${idx + 1}.</strong> ${q.prompt}</p>`;
+            q.options.forEach((option) => {
+              const btn = document.createElement("button");
+              btn.textContent = option.text;
+              btn.addEventListener("click", () => {
+                container.querySelectorAll("button").forEach((b) => b.classList.remove("correct", "wrong"));
+                btn.classList.add(option.correct ? "correct" : "wrong");
+                feedback.textContent = option.feedback;
+              });
+              container.appendChild(btn);
+            });
+            const feedback = document.createElement("p");
+            feedback.style.fontStyle = "italic";
+            feedback.style.color = "#caf0f8";
+            feedback.textContent = "";
+            container.appendChild(feedback);
+            quiz.appendChild(container);
+          });
+          grid.appendChild(card);
+        } else if (block.type === "details") {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <span class="tag">Quick Reference</span>
+            <h3>${section.title}</h3>
+            <p>${section.intro}</p>
+          `;
+          block.items.forEach((item) => {
+            const details = document.createElement("details");
+            const summary = document.createElement("summary");
+            summary.innerHTML = item.summary;
+            const body = document.createElement("div");
+            body.innerHTML = item.body;
+            details.append(summary, body);
+            card.appendChild(details);
+          });
+          grid.appendChild(card);
+        } else {
+          const card = document.createElement("div");
+          card.className = "card";
+          if (block.tag) {
+            const tag = document.createElement("span");
+            tag.className = "tag";
+            tag.textContent = block.tag;
+            card.appendChild(tag);
+          }
+          const heading = document.createElement("h3");
+          heading.innerHTML = block.heading;
+          const p = document.createElement("p");
+          p.innerHTML = block.content;
+          card.append(heading, p);
+          grid.appendChild(card);
+        }
+      });
+
+      content.appendChild(clone);
+    });
+
+    function setActiveSection(targetId) {
+      document.querySelectorAll("section").forEach((section) => {
+        section.classList.toggle("active", section.id === targetId);
+      });
+      document.querySelectorAll("#nav button").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.target === targetId);
+      });
+    }
+
+    nav.addEventListener("click", (event) => {
+      if (event.target.tagName === "BUTTON") {
+        setActiveSection(event.target.dataset.target);
+      }
+    });
+
+    function updateForwardCalculator(card) {
+      const spot = parseFloat(card.querySelector("[data-forward='spot']").value) || 0;
+      const rate = (parseFloat(card.querySelector("[data-forward='rate']").value) || 0) / 100;
+      const yieldVal = (parseFloat(card.querySelector("[data-forward='yield']").value) || 0) / 100;
+      const time = parseFloat(card.querySelector("[data-forward='time']").value) || 0;
+      const forward = spot * Math.exp((rate - yieldVal) * time);
+      card.querySelector("[data-forward='output']").innerHTML = `Forward Price = <strong>${forward.toFixed(2)}</strong>`;
+    }
+
+    document.querySelectorAll("[data-forward='spot']").forEach((input) => {
+      const card = input.closest(".card");
+      ["spot", "rate", "yield", "time"].forEach((attr) => {
+        card.querySelector(`[data-forward='${attr}']`).addEventListener("input", () => updateForwardCalculator(card));
+      });
+      updateForwardCalculator(card);
+    });
+
+    function updateOptionCalculator(card) {
+      const spot = parseFloat(card.querySelector("[data-option='spot']").value) || 0;
+      const strike = parseFloat(card.querySelector("[data-option='strike']").value) || 0;
+      const callIntrinsic = Math.max(0, spot - strike);
+      const putIntrinsic = Math.max(0, strike - spot);
+      card.querySelector("[data-option='call']").textContent = callIntrinsic.toFixed(2);
+      card.querySelector("[data-option='put']").textContent = putIntrinsic.toFixed(2);
+      const insight = callIntrinsic === 0 && putIntrinsic === 0
+        ? "Both options are out-of-the-money: only time value remains."
+        : callIntrinsic > 0
+        ? "Call is in-the-money; intrinsic value equals S - K."
+        : "Put is in-the-money; intrinsic value equals K - S.";
+      card.querySelector("[data-option='insight']").textContent = insight;
+    }
+
+    document.querySelectorAll("[data-option='spot']").forEach((input) => {
+      const card = input.closest(".card");
+      ["spot", "strike"].forEach((attr) => {
+        card.querySelector(`[data-option='${attr}']`).addEventListener("input", () => updateOptionCalculator(card));
+      });
+      updateOptionCalculator(card);
+    });
+
+    const canvas = document.querySelector(".payoff-chart canvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * devicePixelRatio;
+      canvas.height = rect.height * devicePixelRatio;
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+    }
+
+    function payoff(strategy, S, K, premiumCall, premiumPut) {
+      switch (strategy) {
+        case "longCall":
+          return { payoff: Math.max(0, S - K), profit: Math.max(0, S - K) - premiumCall };
+        case "shortCall":
+          return { payoff: -Math.max(0, S - K), profit: premiumCall - Math.max(0, S - K) };
+        case "longPut":
+          return { payoff: Math.max(0, K - S), profit: Math.max(0, K - S) - premiumPut };
+        case "shortPut":
+          return { payoff: -Math.max(0, K - S), profit: premiumPut - Math.max(0, K - S) };
+        case "coveredCall":
+          return { payoff: Math.min(S - K, 0) + (S - K), profit: Math.min(S - K, 0) + (S - K) + premiumCall };
+        case "protectivePut":
+          return { payoff: Math.max(S - K, 0) + Math.max(0, K - S), profit: Math.max(S - K, 0) + Math.max(0, K - S) - premiumPut };
+        case "straddle":
+          const call = Math.max(0, S - K);
+          const put = Math.max(0, K - S);
+          return { payoff: call + put, profit: call + put - (premiumCall + premiumPut) };
+        case "strangle":
+          const K2 = K * 1.1;
+          const callS = Math.max(0, S - K2);
+          const putS = Math.max(0, K - S);
+          return { payoff: callS + putS, profit: callS + putS - (premiumCall + premiumPut) };
+      }
+    }
+
+    function drawChart() {
+      resizeCanvas();
+      const strategy = document.querySelector("[data-payoff='strategy']").value;
+      const K = parseFloat(document.querySelector("[data-payoff='strike']").value) || 0;
+      const premiumCall = parseFloat(document.querySelector("[data-payoff='premiumCall']").value) || 0;
+      const premiumPut = parseFloat(document.querySelector("[data-payoff='premiumPut']").value) || 0;
+      const width = canvas.width / devicePixelRatio;
+      const height = canvas.height / devicePixelRatio;
+      ctx.clearRect(0, 0, width, height);
+
+      const maxS = K * 2;
+      const minS = Math.max(0, K * 0.2);
+      const steps = 100;
+      const xs = [];
+      const payoffs = [];
+      const profits = [];
+
+      for (let i = 0; i <= steps; i++) {
+        const S = minS + ((maxS - minS) * i) / steps;
+        const { payoff: payoffVal, profit: profitVal } = payoff(strategy, S, K, premiumCall, premiumPut);
+        xs.push(S);
+        payoffs.push(payoffVal);
+        profits.push(profitVal);
+      }
+
+      const allY = [...payoffs, ...profits];
+      const minY = Math.min(...allY);
+      const maxY = Math.max(...allY);
+
+      function mapX(S) {
+        return ((S - minS) / (maxS - minS)) * width;
+      }
+
+      function mapY(val) {
+        const padding = 20;
+        return height - padding - ((val - minY) / (maxY - minY || 1)) * (height - padding * 2);
+      }
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, mapY(0));
+      ctx.lineTo(width, mapY(0));
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(mapX(K), 0);
+      ctx.lineTo(mapX(K), height);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+      ctx.stroke();
+
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--info");
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      payoffs.forEach((val, idx) => {
+        const x = mapX(xs[idx]);
+        const y = mapY(val);
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--accent");
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      profits.forEach((val, idx) => {
+        const x = mapX(xs[idx]);
+        const y = mapY(val);
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+
+    ["strategy", "strike", "premiumCall", "premiumPut"].forEach((attr) => {
+      document.querySelector(`[data-payoff='${attr}']`).addEventListener("input", drawChart);
+    });
+
+    window.addEventListener("resize", drawChart);
+    drawChart();
+
+    document.querySelectorAll(".flashcard").forEach((card) => {
+      card.addEventListener("click", () => {
+        card.classList.toggle("flipped");
+      });
+    });
+  </script>
+</body>
+</html>
