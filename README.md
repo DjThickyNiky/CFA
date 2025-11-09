@@ -1,45 +1,61 @@
-# CFA Study Companion Workspace
+# CFA Level I Curriculum Navigator
 
-This repository pairs the 2025 CFA Level I curriculum outlines with an interactive single-page application that keeps each topic organised. The new `web/` workspace contains a Vite + React scaffold with TypeScript support and a dedicated Derivatives mastery lab that reuses the interactive widgets from the original HTML prototype.
-
-## Directory Highlights
-
-- `web/` – source for the study companion SPA, including build tooling and modularised topic content.
-  - `src/App.tsx` – top-level tab navigation for all 10 CFA Level I topic areas plus progress and diagnostics views.
-  - `modules/derivatives.tsx` – React implementation of the Derivatives Mastery Lab, featuring calculators, payoff visualiser, flashcards, and quiz.
-- `cfa-program2025L1V*.txt` – reference text exports for each curriculum volume.
-- `derivatives_module.html` – archived standalone prototype retained for historical context.
+This repository curates the 2025 Level I curriculum into a structured, interactive study experience. The original CFA Institute text files (`cfa-program2025L1V*.txt`) are summarized into data sets that power topic-specific modules and cross-topic review utilities.
 
 ## Getting Started
 
-```bash
-cd web
-npm install
-npm run dev
-```
+> **Note:** Direct package installation from the public npm registry may be restricted in some environments. If `npm install` fails, configure your npm proxy/registry settings or install the listed dependencies manually.
 
-The development server (powered by Vite) provides hot module replacement and can be reached at the URL printed in the terminal, typically `http://localhost:5173`.
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Launch the development server:
+   ```bash
+   npm run dev
+   ```
+   Vite serves the curriculum navigator at the printed local URL. The app dynamically loads topic data and interactive modules.
+3. Build a production bundle:
+   ```bash
+   npm run build
+   ```
+   Compiled assets are written to `web/dist/`.
+4. Preview the production bundle locally:
+   ```bash
+   npm run preview
+   ```
 
-## Production Build & Local Preview
+## Navigating the Curriculum
 
-Generate an optimised production bundle in `web/dist/`:
+The web experience mirrors the Level I topic weights. Use the left navigation rail to switch between modules:
 
-```bash
-cd web
-npm run build
-```
+- **Ethical and Professional Standards**
+- **Quantitative Methods**
+- **Economics**
+- **Financial Statement Analysis**
+- **Corporate Issuers**
+- **Equity Investments**
+- **Fixed Income**
+- **Derivatives**
+- **Alternative Investments**
+- **Portfolio Management and Wealth Planning**
+- **Cross-Topic Review** (mixed quizzes, global formula sheet, and spaced-repetition queue)
 
-To serve the built assets locally, either use Vite’s preview command or any static file server:
+Each topic view includes:
 
-```bash
-cd web
-npm run preview  # serves dist/ over http://localhost:4173 by default
-```
+- Learning objective summaries sourced from the corresponding CFA volume.
+- Curated formula decks with usage context.
+- Exam strategy notes.
+- Interactive flashcards, calculators, and timelines tailored to the topic.
 
-Alternatively, you can run a static server such as `npx http-server dist` from the `web/` directory.
+## Cross-Topic Features
 
-## Next Steps
+The **Cross-Topic Review** area consolidates resources to reinforce retention across study sessions:
 
-- Extend each topic tab with focused study planners, diagnostic charts, or reading trackers.
-- Integrate spaced repetition data to populate the progress and diagnostics views with live metrics.
-- Layer in authentication and persistence if you plan to track user-specific study analytics.
+- **Mixed Quiz:** Pulls flashcards from every topic and presents randomized multiple-choice prompts.
+- **Global Formula Sheet:** Aggregates every formula in one searchable view for cram sessions.
+- **Spaced-Repetition Queue:** Tracks flashcard review intervals in local storage and promotes cards that are due for review.
+
+## Source Data
+
+The original CFA Program text files remain in the repository root. Each `web/src/data/*.ts` module documents the source volume used for its summaries, enabling transparent traceability back to the official materials.
